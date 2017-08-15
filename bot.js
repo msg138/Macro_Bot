@@ -94,7 +94,7 @@ gkm.events.on('key.pressed', function(data) {
     if(data == KACTION_COLORCHANGETO)
         addAction(ACTION_COLORCHANGETO, [mpos.x, mpos.y, getMouseColor()], getDelay());
     if(data == KSAVE)
-        saveScript("bots.js");    
+        saveScript("bots.json");    
     if(data == KSTART)
         restartScript();
     if(data == KSTOP)
