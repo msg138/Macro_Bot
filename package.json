@@ -1,0 +1,24 @@
+{
+  "name": "macro_bot",
+  "version": "1.0.0",
+  "description": "Setup macros to repeat actions and save to JSON files for future use.",
+  "main": "bot.js",
+  "scripts": {
+    "test": "node bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msg138/Macro_Bot.git"
+  },
+  "keywords": [
+    "RobotJS",
+    "NodeJS",
+    "GKM"
+  ],
+  "author": "Michael George",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/msg138/Macro_Bot/issues"
+  },
+  "homepage": "https://github.com/msg138/Macro_Bot#readme"
+}
