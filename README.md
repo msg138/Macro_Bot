@@ -51,6 +51,7 @@ Second set of actions Press The **'MORE'** key before these.
 - ACTION_DOUBLERIGHTCLICK - F3      *Double click the mouse(right) at it's location*
 
 Utility Keys
+- REPEAT - F8                       *Used to toggle whether the script repeats or not*
 - MORE - F9                         *Used to access more actions to have the script run*
 - SAVE - F10                        *Save the script, default saved to bots.json*
 - START / RESTART - F11             *Start a script that has been saved, if stopped earlier, it will restart*
