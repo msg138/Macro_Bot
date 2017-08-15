@@ -3,17 +3,15 @@ A Macro Bot made using NodeJS, RobotJS, KeyPress, and GKM
 This was made to allow me to easier test things, by having the computer complete the repetitive actions i normally would have to.
 
 ### Prerequisites
-'''
-npm install gkm --save
-npm install keypress --save
-npm install robotjs --save
-'''
+> npm install gkm --save
+> npm install keypress --save
+> npm install robotjs --save
 
 ### Authors
 - **Michael George** - *Initial Work* - [MSG138](https://github.com/msg138)
 
 ### License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ### External Libraries Used
 - GKM [NPM](https://www.npmjs.com/package/gkm)
