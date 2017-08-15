@@ -265,9 +265,9 @@ function runScript(){
             break;
         case ACTION_MOVERELATIVE:
             if(SMOOTH_MOVE){
-                robot.moveMouseSmooth(script.params[mpos.x + script.currentStep][0], mpos.y + script.params[script.currentStep][1]);
+                robot.moveMouseSmooth(mpos.x + script.params[script.currentStep][0], mpos.y + script.params[script.currentStep][1]);
             }else
-                robot.moveMouse(script.params[mpos.x + script.currentStep][0], mpos.y + script.params[script.currentStep][1]);
+                robot.moveMouse(mpos.x + script.params[script.currentStep][0], mpos.y + script.params[script.currentStep][1]);
             break;
         case ACTION_MOUSEDRAG:
             robot.dragMouse(script.params[script.currentStep][0], script.params[script.currentStep][1]);
