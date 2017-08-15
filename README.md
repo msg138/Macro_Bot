@@ -37,7 +37,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 To start with a script loaded, run 'node bot.js <scriptname>' replacing <scriptname> with the name of the script.
 > node bot.js script.json
 
-To setup a script, you can use these keyboard shortcuts, which will translate to actions to be used by the script.
+To setup a script, you can use these keyboard shortcuts, which will translate to actions to be used by the script. These keys can be changed in the javascript file ['bot.js'](bot.js)
 Actions:
 - ACTION_MOVE - F1                  *Move the mouse to current mouse location*
 - ACTION_CLICK - F2                 *Click the mouse at it's script location*
@@ -46,9 +46,14 @@ Actions:
 - ACTION_COLORCHANGE - F5           *Store the position and current color*
 - ACTION_COLORCHANGETO - F6         *Store the position and current color*
 - ACTION_MOUSEDRAG - F7             *Drag the mouse to current mouse location*
-- ACTION_DOUBLECLICK - F8           *Double click the mouse at it's location*
-- ACTION_DOUBLERIGHTCLICK - F9      *Double click the mouse(right) at it's location*
 
+Second set of actions Press The **'MORE'** key before these.
+- ACTION_MOUSERELATIVE - F1         *Move mouse relative to it's scriptposition, for now only increments in 20's*
+- ACTION_DOUBLECLICK - F2           *Double click the mouse at it's location*
+- ACTION_DOUBLERIGHTCLICK - F3      *Double click the mouse(right) at it's location*
+
+Utility Keys
+- MORE - F9                         *Used to access more actions to have the script run*
 - SAVE - F10                        *Save the script, default saved to bots.json*
 - START / RESTART - F11             *Start a script that has been saved, if stopped earlier, it will restart*
 - STOP - F12                        *Stop the current script. If no script is running, clears the current script*
