@@ -37,7 +37,10 @@ var ACTION_COLORCHANGETO = 5;
 var ACTION_MOUSEDRAG = 6;
 var ACTION_DOUBLECLICK = 7;
 var ACTION_DOUBLERIGHTCLICK = 8;
-var ACTION_MOVERELATIVE = 9;
+// This action will make all moves in the script relative. (AFTER THIS ACTION IS ADDED) 
+var ACTION_MOVERELATIVEALL = 9;
+var ACTION_MOVERELATIVE = 10;
+var ACTION_REPEAT = 11;
 
 // Must press CTRL in conjunction with this key.
 var KACTION_QUIT = 'c';
@@ -58,15 +61,18 @@ var KREPEAT = 'F8';
 var KMORE = 'F9';
 
 // Second set of actions
-var KACTION_MOVERELATIVE = 'F1';
+var KACTION_MOVERELATIVEALL = 'F1';
 var KACTION_DOUBLECLICK = 'F2';
 var KACTION_DOUBLERIGHTCLICK = 'F3';
+var KACTION_REPEAT = 'F4';
 
 var KSAVE = 'F10';
 var KSTART = 'F11';
 var KSTOP = 'F12';
 
 var running = undefined;
+
+var currentNumber = 0;
 
 var storeAction = undefined;
  
@@ -85,17 +91,27 @@ process.stdin.on('keypress', function (ch, key) {
 gkm.events.on('key.pressed', function(data) {
     console.log(this.event + ' ' + (data+"").toLowerCase());
 
+    var num = parseInt(data);
+    if(!isNaN(num)){
+        currentNumber = currentNumber * 10;
+        currentNumber += num;
+        return;
+    }
+
+    var mpos = robot.getMousePos();
+
     if(storeAction !== undefined){
         if(storeAction == ACTION_KEYPRESS)
             addAction(ACTION_KEYPRESS, [(data+"").toLowerCase()], getDelay());
         if(storeAction == ACTION_MORE){
-            if(data == KACTION_MOVERELATIVE)
-                addAction(ACTION_MOVERELATIVE, [20, 20], getDelay());// TODO allow user input of numbers for precision
-            // TODO allow user to have relative mouse movement compared to last mouse move action
+            if(data == KACTION_MOVERELATIVEALL)
+                addAction(ACTION_MOVERELATIVEALL, [mpos.x, mpos.y], getDelay());
             if(data == KACTION_DOUBLECLICK)
                 addAction(ACTION_DOUBLECLICK, [], getDelay());
             if(data == KACTION_DOUBLERIGHTCLICK)
                 addAction(ACTION_DOUBLERIGHTCLICK, [], getDelay());
+            if(data == KACTION_REPEAT)
+                addAction(ACTION_REPEAT, [currentNumber], getDelay());
             if(data == KMORE){
                 storeAction = ACTION_MORE2;
                 return;
@@ -121,8 +137,6 @@ gkm.events.on('key.pressed', function(data) {
         storeAction = undefined;
         return;
     }
-
-    var mpos = robot.getMousePos();
     if(data == KMORE)
         storeAction = ACTION_MORE;
     if(data == KREPEAT)
@@ -147,6 +161,9 @@ gkm.events.on('key.pressed', function(data) {
         restartScript();
     if(data == KSTOP)
         stopScript();
+
+    // No number was pressed, reset the current Number variable.
+    currentNumber = 0;
 });
  
 process.stdin.setRawMode(true);
@@ -163,6 +180,17 @@ function getMouseColor(){
 
 
 function addAction(a, p, d){
+    if(a == ACTION_MOVE || a == ACTION_MOUSEDRAG){
+        for(var i=0;i<script.action.length;i++){
+            if(script.action[i] == ACTION_MOVERELATIVEALL){
+                a = ACTION_MOVERELATIVE;
+                p[0] = script.params[i][0] - p[0];
+                p[1] = script.params[i][1] - p[1];
+                break;
+            }
+        }
+    }
+
     script.action.push(a);
     script.params.push(p);
     script.delay.push(d);
@@ -240,8 +268,23 @@ function runScript(){
         setTimeout(runScript, REPEAT_DELAY);
         return;
     }
+    runAction(script.currentStep);
+    running = setTimeout(function(){
+        script.currentStep++;
+        running = undefined;
+        runScript();
+    }, script.delay[script.currentStep]);
+}
+
+function runAction(cs){
     var mpos = robot.getMousePos();
-    switch(script.action[script.currentStep]){
+    switch(script.action[cs]){
+        case ACTION_REPEAT:
+            if(cs <= 0)
+                break;
+            for(var i=0;i<script.params[cs][0];i++)
+                runAction(script.params[cs-1]);
+            break;
         case ACTION_CLICK:
             robot.mouseClick();
             break;
@@ -255,47 +298,26 @@ function runScript(){
             robot.mouseClick('right', true);
             break;
         case ACTION_KEYPRESS:
-            robot.keyTap(script.params[script.currentStep][0]);
+            robot.keyTap(script.params[cs][0]);
             break;
         case ACTION_MOVE:
             if(SMOOTH_MOVE){
-                robot.moveMouseSmooth(script.params[script.currentStep][0], script.params[script.currentStep][1]);
+                robot.moveMouseSmooth(script.params[cs][0], script.params[cs][1]);
             }else
-                robot.moveMouse(script.params[script.currentStep][0], script.params[script.currentStep][1]);
+                robot.moveMouse(script.params[cs][0], script.params[cs][1]);
             break;
         case ACTION_MOVERELATIVE:
             if(SMOOTH_MOVE){
-                robot.moveMouseSmooth(mpos.x + script.params[script.currentStep][0], mpos.y + script.params[script.currentStep][1]);
+                robot.moveMouseSmooth(mpos.x + script.params[cs][0], mpos.y + script.params[cs][1]);
             }else
-                robot.moveMouse(mpos.x + script.params[script.currentStep][0], mpos.y + script.params[script.currentStep][1]);
+                robot.moveMouse(mpos.x + script.params[cs][0], mpos.y + script.params[cs][1]);
             break;
         case ACTION_MOUSEDRAG:
-            robot.dragMouse(script.params[script.currentStep][0], script.params[script.currentStep][1]);
-            break;
-        case ACTION_COLORCHANGE:
-            if(robot.getPixelColor(script.params[script.currentStep][0], script.params[script.currentStep][1]) != script.params[script.currentStep][2])
-            {
-                if(script.params[script.currentStep][3] !== undefined)
-                    script.currentStep = script.params[script.currentStep][3] - 1;
-            }else
-                script.currentStep --;
-            break;
-        case ACTION_COLORCHANGETO:
-            if(robot.getPixelColor(script.params[script.currentStep][0], script.params[script.currentStep][1]) == script.params[script.currentStep][2])
-            {
-                if(script.params[script.currentStep][3] !== undefined)
-                    script.currentStep = script.params[script.currentStep][3] - 1;
-            }else
-                script.currentStep --;
+            robot.dragMouse(script.params[cs][0], script.params[cs][1]);
             break;
     }
-
-    running = setTimeout(function(){
-        script.currentStep++;
-        running = undefined;
-        runScript();
-    }, script.delay[script.currentStep]);
 }
+
 
 // Check if an argument was passed and load the script if so.
 if(process.argv.length > 2){
