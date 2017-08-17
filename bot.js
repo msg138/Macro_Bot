@@ -1,9 +1,9 @@
 // Get mouse coordinates, used for designing scripts
 var test = undefined;
 var fs = require("fs");
-fs.exists(path, function (exists) {
+fs.exists("simpletest.js", function (exists) {
     if (exists) {
-        test = require(path);
+        test = require("./simpletest.js");
     }else
         test = false;
 });
@@ -364,8 +364,4 @@ function runAction(cs){
 // Check if an argument was passed and load the script if so.
 if(process.argv.length > 2){
     loadScript(process.argv[2]);
-}
-
-if(test){
-    test.assertEquals(1, 2);
 }
