@@ -42,6 +42,35 @@ var ACTION_MOVERELATIVEALL = 9;
 var ACTION_MOVERELATIVE = 10;
 var ACTION_REPEAT = 11;
 
+function stringAction(a){
+    switch(a){
+        case ACTION_MOVE:
+            return "ACTION_MOVE";
+        case ACTION_CLICK:
+            return "ACTION_CLICK";
+        case ACTION_KEYPRESS:
+            return "ACTION_KEYPRESS";
+        case ACTION_RIGHTCLICK:
+            return "ACTION_RIGHTCLICK";
+        case ACTION_COLORCHANGE:
+            return "ACTION_COLORCHANGE";
+        case ACTION_COLORCHANGETO:
+            return "ACTION_COLORCHANGETO";
+        case ACTION_MOUSEDRAG:
+            return "ACTION_MOUSEDRAG";
+        case ACTION_DOUBLECLICK:
+            return "ACTION_DOUBLECLICK";
+        case ACTION_DOUBLERIGHTCLICK:
+            return "ACTION_DOUBLERIGHTCLICK";
+        case ACTION_MOVERELATIVEALL:
+            return "ACTION_MOVERELATIVEALL";
+        case ACTION_MOVERELATIVE:
+            return "ACTION_MOVERELATIVE";
+        case ACTION_REPEAT:
+            return "ACTION_REPEAT";
+    }
+}
+
 // Must press CTRL in conjunction with this key.
 var KACTION_QUIT = 'c';
 
@@ -90,6 +119,10 @@ process.stdin.on('keypress', function (ch, key) {
 // Listen to all pressed key events
 gkm.events.on('key.pressed', function(data) {
     console.log(this.event + ' ' + (data+"").toLowerCase());
+
+    if((data+"").toLowerCase() === "left control"){
+        return;
+    }
 
     var num = parseInt(data);
     if(!isNaN(num)){
@@ -177,19 +210,19 @@ function getMouseColor(){
     var mpos = robot.getMousePos();
     return robot.getPixelColor(mpos.x, mpos.y);
 }
-
-
 function addAction(a, p, d){
     if(a == ACTION_MOVE || a == ACTION_MOUSEDRAG){
         for(var i=0;i<script.action.length;i++){
             if(script.action[i] == ACTION_MOVERELATIVEALL){
                 a = ACTION_MOVERELATIVE;
-                p[0] = script.params[i][0] - p[0];
-                p[1] = script.params[i][1] - p[1];
+                p[0] = p[0] - script.params[i][0];
+                p[1] = p[1] - script.params[i][1];
                 break;
             }
         }
     }
+
+    console.log("Adding action to script: " + a + "-" + stringAction(a) + " with params "+ p +" , after " + d + " mills");
 
     script.action.push(a);
     script.params.push(p);
@@ -277,13 +310,14 @@ function runScript(){
 }
 
 function runAction(cs){
+    console.log("executing action: " + script.action[cs] + "-"+stringAction(script.action[cs]));
     var mpos = robot.getMousePos();
     switch(script.action[cs]){
         case ACTION_REPEAT:
             if(cs <= 0)
                 break;
             for(var i=0;i<script.params[cs][0];i++)
-                runAction(script.params[cs-1]);
+                runAction(cs-1);
             break;
         case ACTION_CLICK:
             robot.mouseClick();
