@@ -365,3 +365,11 @@ function runAction(cs){
 if(process.argv.length > 2){
     loadScript(process.argv[2]);
 }
+
+if(process.argv.length > 3){
+    switch(process.argv[3]){
+        case "--autostart":
+            restartScript();
+            break;
+    }
+}
