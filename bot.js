@@ -367,9 +367,13 @@ if(process.argv.length > 2){
 }
 
 if(process.argv.length > 3){
-    switch(process.argv[3]){
-        case "--autostart":
-            restartScript();
-            break;
-    }
+    for(var i=0;i<process.argv.length-3;i++)
+        switch(process.argv[i+3]){
+            case "--autostart":
+                restartScript();
+                break;
+            case "--norepeat":
+                SCRIPT_REPEAT = false;
+                break;
+        }
 }
