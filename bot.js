@@ -27,6 +27,8 @@ gkm.events.on('mouse.*', function(data) {
 
 var SMOOTH_MOVE = true;
 
+var CURRENT_DELAY = 100;
+
 var SCRIPT_REPEAT = true;
 var REPEAT_DELAY = 0;
 
@@ -102,6 +104,7 @@ var KACTION_MOVERELATIVEALL = 'F1';
 var KACTION_DOUBLECLICK = 'F2';
 var KACTION_DOUBLERIGHTCLICK = 'F3';
 var KACTION_REPEAT = 'F4';
+var KACTION_DELAY = 'F5';
 
 var KSAVE = 'F10';
 var KSTART = 'F11';
@@ -153,6 +156,8 @@ gkm.events.on('key.pressed', function(data) {
                 addAction(ACTION_DOUBLERIGHTCLICK, [], getDelay());
             if(data == KACTION_REPEAT)
                 addAction(ACTION_REPEAT, [currentNumber], getDelay());
+            if(data == KACTION_DELAY)
+                CURRENT_DELAY = currentNumber;
             if(data == KMORE){
                 storeAction = ACTION_MORE2;
                 return;
@@ -211,7 +216,7 @@ process.stdin.setRawMode(true);
 process.stdin.resume();
 
 function getDelay(){
-    return 100;
+    return CURRENT_DELAY;
 }
 
 function getMouseColor(){
