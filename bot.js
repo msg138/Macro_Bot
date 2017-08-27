@@ -12,6 +12,8 @@ var robot = require("robotjs");
 var keypress = require('keypress');
 var fs = require("fs");
 var gkm = require('gkm');
+
+// TODO make an array of skripts with this object prototype.
 var script = {
     action: [],
     params: [],
@@ -19,6 +21,7 @@ var script = {
     currentStep: 0
 };
 
+var currentScript = 0; // Store the current acting script.
 
 /*/ Listen to all mouse events (click, pressed, released, moved, dragged)
 gkm.events.on('mouse.*', function(data) {
@@ -203,8 +206,10 @@ gkm.events.on('key.pressed', function(data) {
         addAction(ACTION_COLORCHANGETO, [mpos.x, mpos.y, getMouseColor()], getDelay());
     if(data == KSAVE)
         saveScript("bots.json");    
-    if(data == KSTART)
+    if(data == KSTART){
+        currentScript = currentNum;
         restartScript();
+    }
     if(data == KSTOP)
         stopScript();
 
